@@ -6,6 +6,7 @@ const removeTodoButton = document.querySelector("#removeTodoButton");
 const todoList = document.querySelector("#todoList");
 const unOrdinaryList = document.querySelector("#id");
 unOrdinaryList.addEventListener("click", removeSingleTodo);
+completedTodos = 0;
 
 let todos = [];
 
@@ -100,7 +101,9 @@ function removeSingleTodo(e) {
 
 // TÜM TODOLARI KALDIRAN FONKSİYON
 function removeAllTodos() {
-    if (confirm("Tüm todoları kaldırmak istediğinizden emin misiniz.")) {
+    if (confirm("Tüm todoları kaldırmak istediğinizden emin misiniz? Todolar başarısız olacak")) {
+            
+        
         unOrdinaryList.innerHTML = "";
 
         localStorage.removeItem("todos");
