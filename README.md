@@ -14,5 +14,6 @@ Kullanılan Teknolojiler:
 
  HTML5,
  Bootstrap 4,
- JavaScript
+ JavaScript,
+ CSS
 
