@@ -5,9 +5,11 @@ const searchTodo = document.querySelector("#searchTodo");
 const removeTodoButton = document.querySelector("#removeTodoButton");
 const todoList = document.querySelector("#todoList");
 const unOrdinaryList = document.querySelector("#id");
-unOrdinaryList.addEventListener("click", removeSingleTodo);
-completedTodos = 0;
+const unOrdinaryList2 = document.querySelector("#furo")
 
+
+let completedTodos = [];
+let uncompletedTodos = []
 let todos = [];
 
 // === OLAY İZLEYİCİLERİ ===
@@ -21,6 +23,9 @@ todoAddButton.addEventListener("click", addTodo);
 // TÜM TODOLARI KALDIR EVENT
 removeTodoButton.addEventListener("click", removeAllTodos);
 
+unOrdinaryList.addEventListener("click", removeSingleTodo);
+// Sayfa Yenilendiğinde Başarılı Todoları Arayüze Getir
+document.addEventListener("DOMContentLoaded", addCompletedTodosUI);
 
 // === FONKSİYONLAR ===
 
@@ -36,13 +41,13 @@ function loadTodosFromStorage() {
 
 // TODO EKLEME FONKSİYON
 function addTodo(e) {
-    e.preventDefault(); 
+    e.preventDefault();
     const todoText = todo.value.trim();
 
     if (todoText === "") {
         createAlert("danger", "Lütfen bir todo giriniz");
     } else {
-      
+
         addTodoToUI(todoText);
 
         todos.push(todoText);
@@ -51,14 +56,14 @@ function addTodo(e) {
         localStorage.setItem("todos", JSON.stringify(todos));
 
         createAlert("success", "Todo Başarıyla Eklendi");
-        todo.value = ""; 
+        todo.value = "";
     }
 }
 
 // Arayüze Todo Ekleme 
 function addTodoToUI(todoText) {
     const newLi = document.createElement("li");
-    newLi.textContent = todoText; 
+    newLi.textContent = todoText;
     newLi.className = "list-group-item d-flex justify-content-between align-items-center bg-warning";
 
     const deleteLink = document.createElement("a");
@@ -68,53 +73,59 @@ function addTodoToUI(todoText) {
     deleteLink.style.textDecoration = "none";
     deleteLink.style.fontSize = "1.5rem";
 
-    
 
-    newLi.appendChild(deleteLink); 
+
+    newLi.appendChild(deleteLink);
     unOrdinaryList.appendChild(newLi);
 }
 
 // Tekil Todo Silme Fonksiyonu 
 function removeSingleTodo(e) {
-    if(e.target.tagName === "A"){
+    if (e.target.tagName === "A") {
 
 
-    e.preventDefault();
+        if (confirm("Todo Tamamlandı Mı Evet İçin Tamam'a Hayır için İptal'e Basınız.")) {
+            e.preventDefault();
 
-    const liToRemove = e.target.parentElement;
+            const liToRemove = e.target.parentElement;
 
-    const todoText = liToRemove.firstChild.textContent.trim();
+            const todoText = liToRemove.firstChild.textContent.trim();
 
-    liToRemove.remove();
+            liToRemove.remove();
 
-    const index = todos.indexOf(todoText);
-    if (index > -1) {
-        todos.splice(index, 1);
-    }
-  
-    localStorage.setItem("todos", JSON.stringify(todos));
+            const index = todos.indexOf(todoText);
+            if (index > -1) {
+                todos.splice(index, 1);
+            }
 
-    
-    createAlert("info", "Todo silindi.");
+            localStorage.setItem("todos", JSON.stringify(todos));
+
+            completedTodos.push(todoText);
+            localStorage.setItem("completedTodos", JSON.stringify(completedTodos));
+
+            createAlert("info", "Todo Başarılı bir şekilde tamamlandı..");
+              
+            addCompletedTodosUI()
         }
+    }
 }
 
 // TÜM TODOLARI KALDIRAN FONKSİYON
 function removeAllTodos() {
     if (confirm("Tüm todoları kaldırmak istediğinizden emin misiniz? Todolar başarısız olacak")) {
-            
-        
+
+
         unOrdinaryList.innerHTML = "";
 
         localStorage.removeItem("todos");
 
         todos = [];
 
-        createAlert("success", "Tüm todolar başarıyla kaldırıldı");
+        createAlert("info", "Tüm todolar kaldırıldı Todolar BAŞARISIZ");
     }
 }
 
-// ALERT YARATMA FONKSİYON (Değişiklik yok)
+// ALERT YARATMA FONKSİYON 
 function createAlert(color, text) {
     const alert = document.createElement("div");
     alert.setAttribute("role", "alert");
@@ -124,4 +135,24 @@ function createAlert(color, text) {
     setTimeout(() => {
         newCardBody.removeChild(alert);
     }, 1000);
+}
+
+// Başarılı olan Todoları Arayüze verme fonksiyonu
+function addCompletedTodosUI() {
+    unOrdinaryList2.innerHTML = ""
+    const successtodoFromStorage = localStorage.getItem("completedTodos");
+    if (successtodoFromStorage) {
+        completedTodos = JSON.parse(successtodoFromStorage);
+        completedTodos.forEach(function (todo) {
+            addSuccessTodoToUI(todo)
+        })
+    }
+}
+// Başarılı olan todoları arayüzde gösterme
+function addSuccessTodoToUI(successtodo) {
+    const newTodo = document.createElement("li");
+    newTodo.className = "list-group-item d-flex  justify-content-center align-items-start bg-success"
+    newTodo.textContent = successtodo;
+    unOrdinaryList2.appendChild(newTodo);
+
 }
