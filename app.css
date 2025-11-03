@@ -1,5 +1,13 @@
-.asd{
+.completedDiv{
     height: 400px;
     width: 400px;
+    display: inline-block;
+    
+}
+.unCompletedTodos{
+    display: inline-block;
+    height: 400px;
+    width: 400px;
+    padding: 10px;
     
 }
